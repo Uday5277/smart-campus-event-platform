@@ -1,5 +1,5 @@
 import e from "express";
-import { CreateEvent, GetAllEvents, GetEventById } from "./events.service.js";
+import { CreateEvent, GetAllEvents, GetEventById, GetAdminStats } from "./events.service.js";
 
 const handleCreateEvent = async (req,res,next)=>{
     try{
@@ -23,23 +23,39 @@ const handleCreateEvent = async (req,res,next)=>{
     }
 };
 
-const handleGetEvents = (req,res,next)=>{
+const handleGetEvents = async (req,res,next)=>{
     try{
-        return GetAllEvents();
+        const events = await GetAllEvents();
+        return res.status(200).json(events);
 
     }catch(err){
         next(err);
     }
 };
 
-const handleGetEventsById = (req,res,next)=>{
+const handleGetEventsById = async (req,res,next)=>{
     try{
         const id = req.params.id
-        return GetEventById(id);
+        const event = await GetEventById(id);
+        if (!event) {
+            return res.status(404).json({ message: "Event not found" });
+        }
+        return res.status(200).json(event);
 
     }catch(err){
         next(err);
     }
 }
 
-export {handleCreateEvent,handleGetEvents,handleGetEventsById};
+const handleGetAdminStats = async (req,res,next)=>{
+    try{
+        const registeredEvents = await GetAdminStats();
+        return res.status(200).json(registeredEvents);
+
+
+    }catch(err){
+        next(err);
+    }
+}
+
+export {handleCreateEvent,handleGetEvents,handleGetEventsById, handleGetAdminStats};

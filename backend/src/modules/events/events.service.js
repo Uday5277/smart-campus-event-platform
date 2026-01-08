@@ -22,7 +22,17 @@ const CreateEvent = async (eventData)=>{
 const GetAllEvents = async ()=>{
     try{
         const result = await pool.query('SELECT * FROM events');
-        return result.rows;
+        const events = result.rows;
+
+        const eventsWithSeats = await Promise.all(events.map(async(event)=>{
+            const availableSeats = await client.get(`event:${event.id}:available_seats`);
+            return {
+                ...event,
+                availableSeats: availableSeats !== null ? parseInt(availableSeats): event.total_seats
+            };
+        }));
+
+        return eventsWithSeats;
 
     }catch(err){
         console.log("Event service error: ",err.message);
@@ -33,7 +43,7 @@ const GetAllEvents = async ()=>{
 const GetEventById = async (eventId)=>{
     try{
          const result = await pool.query('SELECT * FROM events WHERE id = $1',[eventId]);
-         return result.rows[0].id;
+         return result.rows[0];
 
     }catch(err){
         console.log("Event service error: ",err.message);
@@ -41,4 +51,24 @@ const GetEventById = async (eventId)=>{
     }
 };
 
-export {CreateEvent,GetAllEvents,GetEventById};
+const GetAdminStats = async () => {
+    try {
+        const query = `
+            SELECT 
+                e.id, 
+                e.title, 
+                e.total_seats, 
+                COUNT(r.id) AS registered_count
+            FROM events e
+            LEFT JOIN registrations r ON e.id = r.event_id
+            GROUP BY e.id;
+        `;
+        const result = await pool.query(query);
+        return result.rows;
+    } catch (err) {
+        console.error("Admin Stats Service Error:", err.message);
+        throw err;
+    }
+};
+
+export { CreateEvent, GetAllEvents, GetEventById, GetAdminStats };

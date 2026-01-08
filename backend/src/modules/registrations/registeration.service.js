@@ -27,4 +27,15 @@ const RegisterForEvent = async (userId,eventId)=>{
     
 }
 
-export default RegisterForEvent;
+const getUserRegistrations = async (userId)=>{
+   try{
+    const result = await pool.query('SELECT registrations.id as reg_id, event_id,title,description,start_time,end_time FROM events JOIN registrations ON events.id = registrations.event_id WHERE registrations.user_id = $1',[userId]);
+    return result.rows;
+
+   }catch(err){
+    console.log("Registration Service Error",err.message);
+    throw err;
+   }
+};
+
+export {RegisterForEvent, getUserRegistrations};

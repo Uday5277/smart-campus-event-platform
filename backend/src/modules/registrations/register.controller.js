@@ -1,4 +1,4 @@
-import RegisterForEvent from "./registeration.service.js";
+import {RegisterForEvent,getUserRegistrations} from "./registeration.service.js";
 
 const handleRegisterForEvent = async (req,res,next)=>{
     try{
@@ -22,4 +22,20 @@ const handleRegisterForEvent = async (req,res,next)=>{
     }
 }
 
-export default handleRegisterForEvent;
+const handleRegistersForStudent = async (req,res,next)=>{
+    try{
+        const {userId} = req.params;
+        const registerData = await getUserRegistrations(userId);
+        return res.status(200).json({
+            success:true,
+            message:"Registrations Fetched Successfully",
+            registerData:registerData
+        })
+
+
+    }catch(err){
+        next(err);
+    }
+}
+
+export { handleRegisterForEvent, handleRegistersForStudent};
