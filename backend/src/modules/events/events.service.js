@@ -8,7 +8,7 @@ const CreateEvent = async (eventData)=>{
     if(!title || !description || !totalSeats || !startTime || !endTime){
         throw new Error("Missing required event fields");
     }
-    const result = await pool.query('INSERT INTO events(title,description,total_seats,start_time,end_time) VALUES($1,$2,$3,$4,$5) RETURNING id,total_seats',[title,description,totalSeats,startTime,endTime]);
+    const result = await pool.query('INSERT INTO events(title,description,total_seats,start_time,end_time) VALUES($1,$2,$3,$4,$5) RETURNING id,total_seats',[title,description,parseInt(totalSeats),startTime,endTime]);
 
     const eventId = result.rows[0].id;
     await client.set(`event:${eventId}:available_seats`,String(result.rows[0].total_seats));

@@ -5,7 +5,7 @@ dotenv.config();
 
 const client = createClient({
     username: process.env.REDIS_DB_USERNAME,
-    password: process.env.REDIS_DB_PASSWORD,
+    password: process.env.REDIS_DB_PASSWORD || undefined,
     socket: {
         host: process.env.REDIS_DB_HOST,
         port: process.env.REDIS_DB_PORT

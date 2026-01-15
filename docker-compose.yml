@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # 1. Database Service
+  postgres:
+    image: postgres:15-alpine
+    container_name: campus_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Uday@444
+      POSTGRES_DB: smart_campus
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # 2. Redis Service 
+  redis:
+    image: redis:7-alpine
+    container_name: campus_redis
+    ports:
+      - "6379:6379"
+
+  # 3. Backend Service
+  backend:
+    build: ./backend
+    container_name: campus_backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+      - redis
+    env_file: ./backend/.env
+
+  # 4. Frontend Service
+  frontend:
+    build: ./frontend
+    container_name: campus_frontend
+    ports:
+      - "3000:3000"
+    stdin_open: true # Required for interactive React shell
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
