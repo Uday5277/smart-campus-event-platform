@@ -1,0 +1,26 @@
+:root {
+  --primary-blue: #004a99;
+  --secondary-blue: #003366;
+  --bg-light: #f4f7f9;
+  --white: #ffffff;
+  --text-dark: #333;
+  --success-green: #28a745;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h2 {
+  color: var(--primary-blue);
+  text-align: center;
+  margin-bottom: 20px;
+}

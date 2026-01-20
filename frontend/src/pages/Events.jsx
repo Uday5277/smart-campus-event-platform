@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { fetchEvents, registerForEvent } from '../Api/Events.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import EventCard from '../components/EventCard.jsx';
 
 const Events = () => {
     const [events, setEvents] = useState([]);
@@ -65,12 +66,8 @@ const Events = () => {
                 <p>No events found. Please check your login or server.</p>
             ) : (
                 events.map(event => (
-                    <div key={event.id} className="event-card">
-                        <h3>{event.title}</h3>
-                        <p>{event.description}</p>
-                        <p><strong>Available Seats:</strong> {event.availableSeats}</p>
-                        <button onClick={()=>handleRegister(event.id)} disabled={event.availableSeats <=0 }>{event.availableSeats <= 0 ? "Event Full" : "Register"}</button>
-                    </div>
+                    <EventCard event={event} onRegister={handleRegister} />
+                    
                 ))
             )}
         </div>
