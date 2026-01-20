@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../Api/Auth.js'; 
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -36,6 +36,12 @@ const Login = () => {
                 <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
                 <button type="submit">Login</button>
             </form>
+            <div>
+                <p>Don't have an account? </p>
+                <Link  to="/register" style={{color:'blue', cursor:'pointer', textDecoration:'underline'}}>
+                Click here to Register
+                </Link>
+            </div>
         </div>
     );
 };
